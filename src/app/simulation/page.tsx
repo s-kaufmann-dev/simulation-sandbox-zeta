@@ -24,6 +24,9 @@ import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { PDFReport } from '@/components/pdf-report'
+import { jsPDF } from 'jspdf'
+import html2canvas from 'html2canvas'
 
 type AgentType = 'moderator' | 'skeptic' | 'enthusiast' | 'pragmatist' | 'user'
 
@@ -75,27 +78,28 @@ function SimulationContent() {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
   const [userQuestion, setUserQuestion] = useState('')
   const [isSending, setIsSending] = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const reportRef = useRef<HTMLDivElement>(null)
 
-  const handleDownload = () => {
-    const reportTitle = `Simulation_Report_${concept.replace(/\s+/g, '_')}.md`
-    const content = `# Fokusgruppen-Bericht: ${concept}\n\n` +
-      `**Sprache:** ${lang}\n` +
-      `**Datum:** ${new Date().toLocaleDateString()}\n\n` +
-      `## Zusammenfassung der Diskussion\n\n` +
-      messages.map(m => `### ${m.name} (${m.agent})\n${m.content}\n`).join('\n') +
-      `\n## Analyse-Werte\n` +
-      (dashboardData ? `- Market Fit: ${dashboardData.marketFit}%\n- Vibe Check: ${dashboardData.vibe}%\n- Komplexität: ${dashboardData.complexity}%\n- Skalierbarkeit: ${dashboardData.scalability}%\n` : '')
-
-    const blob = new Blob([content], { type: 'text/markdown' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = reportTitle
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+  const handleDownload = async () => {
+    if (!reportRef.current) return
+    setIsDownloading(true)
+    try {
+      const canvas = await html2canvas(reportRef.current, { scale: 2, backgroundColor: '#0f172a' })
+      const imgData = canvas.toDataURL('image/png')
+      // Wir setzen die PDF-Größe genau auf die Canvas-Dimensionen für höchste Qualität
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      })
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height)
+      pdf.save(`Simulation_Report_${concept.replace(/\s+/g, '_')}.pdf`)
+    } catch (err) {
+      console.error('Failed to generate PDF', err)
+    }
+    setIsDownloading(false)
   }
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -211,6 +215,11 @@ function SimulationContent() {
       </header>
 
       <main className="flex-1 flex overflow-hidden">
+        {/* Hidden PDF Component */}
+        <div style={{ position: 'absolute', top: '-9999px', left: '-9999px' }}>
+            <PDFReport ref={reportRef} concept={concept} lang={lang} messages={messages} dashboardData={dashboardData} />
+        </div>
+
         {/* Left: Chat Feed */}
         <div className={`flex-1 flex flex-col transition-all duration-1000 ${isSimulationComplete ? 'max-w-[40%]' : 'max-w-full'}`}>
           <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
@@ -263,7 +272,7 @@ function SimulationContent() {
             animate={{ opacity: 1, x: 0 }}
             className="flex-1 border-l border-slate-800 bg-slate-900/40 p-10 overflow-y-auto scrollbar-hide"
           >
-            {dashboardData && <Dashboard data={dashboardData} onDownload={handleDownload} />}
+            {dashboardData && <Dashboard data={dashboardData} onDownload={handleDownload} isDownloading={isDownloading} />}
           </motion.div>
         )}
       </main>
@@ -320,7 +329,7 @@ function ThinkingItem({ agent, skill }: { agent: AgentType, skill: string }) {
   )
 }
 
-function Dashboard({ data, onDownload }: { data: DashboardData, onDownload: () => void }) {
+function Dashboard({ data, onDownload, isDownloading }: { data: DashboardData, onDownload: () => void, isDownloading?: boolean }) {
   return (
     <div className="max-w-4xl mx-auto space-y-12">
       <div className="flex items-center justify-between">
@@ -362,10 +371,20 @@ function Dashboard({ data, onDownload }: { data: DashboardData, onDownload: () =
       <div className="flex gap-6">
           <Button 
             onClick={onDownload}
+            disabled={isDownloading}
             className="flex-1 bg-slate-100 text-slate-950 hover:bg-white rounded-2xl h-14 font-semibold transition-all hover:scale-[1.02]"
           >
-            Bericht generieren
-            <Download className="w-4 h-4 ml-2" />
+            {isDownloading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  PDF wird generiert...
+                </>
+            ) : (
+                <>
+                  Bericht generieren
+                  <Download className="w-4 h-4 ml-2" />
+                </>
+            )}
           </Button>
           <Button variant="outline" className="flex-1 border-slate-800 text-slate-400 hover:bg-slate-900 rounded-2xl h-14 font-medium" onClick={() => window.location.assign('/')}>
             Neue Simulation
