@@ -1,0 +1,43 @@
+name: "Synthetic Focus Group"
+version: "1.0"
+
+# Hier verknüpfen wir deine MD-Dateien
+participants:
+  - ref: "agents/moderator.md"
+  - ref: "agents/skeptic.md"
+  - ref: "agents/enthusiast.md"
+  - ref: "agents/pragmatist.md"
+
+# Der Ablauf der Simulation
+steps:
+  - id: initialization
+    description: "User gibt das Thema vor"
+    input_required: true
+
+  - id: opening
+    agent: moderator_01
+    description: "Begrüßung und Themeneinführung"
+    next: debate_round_1
+
+  - id: debate_round_1
+    agents: [agent_skeptic, agent_enthusiast]
+    strategy: "alternating_discussion"
+    rounds: 2
+    skills: [skill_web_search] # Der Skeptiker darf hier suchen
+    next: reality_check
+
+  - id: reality_check
+    agent: agent_pragmatist
+    description: "Stellt die Frage nach dem Nutzen für die Masse"
+    next: final_discussion
+
+  - id: final_discussion
+    agents: [agent_skeptic, agent_enthusiast, agent_pragmatist]
+    strategy: "free_flow"
+    max_turns: 3
+    next: analysis
+
+  - id: analysis
+    agent: moderator_01
+    skills: [skill_vibe_check, skill_report_gen]
+    description: "Erstellt das Fazit und den Bericht"
