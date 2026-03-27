@@ -56,11 +56,11 @@ const getAgents = (lang: string): Record<AgentType, { name: string; icon: any; c
   const t = translations[lang] || translations.EN
 
   return {
-    moderator: { name: t.moderator, icon: Brain, color: 'text-indigo-400', bg: 'bg-indigo-500/10', border: 'border-indigo-500/20' },
-    skeptic: { name: t.skeptic, icon: Shield, color: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/20' },
-    enthusiast: { name: t.enthusiast, icon: Rocket, color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
-    pragmatist: { name: t.pragmatist, icon: User, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
-    user: { name: t.user, icon: MessageSquare, color: 'text-slate-200', bg: 'bg-slate-800', border: 'border-slate-700' }
+    moderator: { name: t.moderator, icon: Brain, color: 'text-white', bg: 'bg-white/[0.03]', border: 'border-white/5' },
+    skeptic: { name: t.skeptic, icon: Shield, color: 'text-slate-300', bg: 'bg-white/[0.02]', border: 'border-white/5' },
+    enthusiast: { name: t.enthusiast, icon: Rocket, color: 'text-slate-200', bg: 'bg-white/[0.04]', border: 'border-white/5' },
+    pragmatist: { name: t.pragmatist, icon: User, color: 'text-slate-100', bg: 'bg-white/[0.02]', border: 'border-white/5' },
+    user: { name: t.user, icon: MessageSquare, color: 'text-black', bg: 'bg-white', border: 'border-white' }
   }
 }
 
@@ -205,21 +205,21 @@ function SimulationContent() {
   return (
     <div className="min-h-screen bg-transparent text-slate-100 flex flex-col selection:bg-indigo-500/30">
       <div className="mesh-gradient" />
-      <header className="h-20 border-b border-white/5 bg-slate-950/40 backdrop-blur-2xl flex items-center justify-between px-10 sticky top-0 z-50">
+      <header className="h-20 border-b border-white/5 bg-black/40 backdrop-blur-2xl flex items-center justify-between px-10 sticky top-0 z-50">
         <div className="flex items-center gap-4">
-          <Brain className="w-6 h-6 text-indigo-400 drop-shadow-[0_0_8px_rgba(129,140,248,0.5)]" />
+          <Brain className="w-6 h-6 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
           <h2 className="text-sm font-medium tracking-tight">Focus Group Simulation</h2>
           <div className="h-4 w-px bg-slate-700" />
           <span className="text-sm text-slate-500 font-light truncate max-w-[200px]">{concept}</span>
         </div>
         
         {isSimulationComplete ? (
-            <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/20 gap-1.5 py-1 px-3">
+            <Badge variant="outline" className="bg-white/5 text-white border-white/10 gap-1.5 py-1 px-3">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 Fertiggestellt
             </Badge>
         ) : (
-            <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/20 gap-1.5 py-1 px-3 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+            <Badge variant="outline" className="bg-white/5 text-slate-300 border-white/10 gap-1.5 py-1 px-3 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 Live Simulation
             </Badge>
@@ -365,15 +365,15 @@ function Dashboard({ data, onDownload, isDownloading, lang }: { data: DashboardD
       </div>
 
       <div className="grid grid-cols-2 gap-10">
-        <MetricCard title="Market Fit" value={data.marketFit} icon={Target} color="text-indigo-400" accent="bg-indigo-500" />
-        <MetricCard title="Vibe Check" value={data.vibe} icon={Zap} color="text-amber-400" accent="bg-amber-500" />
-        <MetricCard title="Complexity" value={data.complexity} icon={Brain} color="text-rose-400" accent="bg-rose-500" />
-        <MetricCard title="Scalability" value={data.scalability} icon={TrendingUp} color="text-emerald-400" accent="bg-emerald-500" />
+        <MetricCard title="Market Fit" value={data.marketFit} icon={Target} color="text-white" accent="bg-white" />
+        <MetricCard title="Vibe Check" value={data.vibe} icon={Zap} color="text-slate-300" accent="bg-slate-300" />
+        <MetricCard title="Complexity" value={data.complexity} icon={Brain} color="text-slate-400" accent="bg-slate-400" />
+        <MetricCard title="Scalability" value={data.scalability} icon={TrendingUp} color="text-slate-500" accent="bg-slate-500" />
       </div>
 
       <Card className="bg-white/[0.02] border-white/5 backdrop-blur-3xl p-10 rounded-[2.5rem] overflow-hidden relative shadow-2xl ring-1 ring-white/5">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 blur-[100px] rounded-full -mr-20 -mt-20" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/5 blur-[100px] rounded-full -ml-20 -mb-20" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 blur-[100px] rounded-full -mr-20 -mt-20" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 blur-[100px] rounded-full -ml-20 -mb-20" />
         
         <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-slate-500 mb-10 opacity-70">{cur.detail}</h3>
         <table className="w-full text-sm">
@@ -451,9 +451,9 @@ function MetricCard({ title, value, icon: Icon, color, accent }: { title: string
 
 function TableRow({ label, value, status }: { label: string, value: string, status: 'success' | 'warning' | 'error' }) {
     const statusIcons = {
-        success: <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />,
-        warning: <div className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]" />,
-        error: <div className="w-2 h-2 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.5)]" />
+        success: <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.5)]" />,
+        warning: <div className="w-2 h-2 rounded-full bg-slate-400 shadow-[0_0_8px_rgba(148,163,184,0.5)]" />,
+        error: <div className="w-2 h-2 rounded-full bg-slate-600 shadow-[0_0_8px_rgba(71,85,105,0.5)]" />
     }
     
     return (

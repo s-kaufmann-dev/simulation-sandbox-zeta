@@ -46,10 +46,10 @@ export const PDFReport = React.forwardRef<HTMLDivElement, PDFReportProps>(
           <div style={{ marginBottom: '60px' }}>
             <h2 style={{ fontSize: '24px', fontWeight: 200, marginBottom: '25px', color: '#f8fafc' }}>{cur.metrics}</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
-              <MetricItem title="Market Fit" value={dashboardData.marketFit} color="#6366f1" />
-              <MetricItem title="Vibe Check" value={dashboardData.vibe} color="#f59e0b" />
-              <MetricItem title="Complexity" value={dashboardData.complexity} color="#f43f5e" />
-              <MetricItem title="Scalability" value={dashboardData.scalability} color="#10b981" />
+              <MetricItem title="Market Fit" value={dashboardData.marketFit} color="#ffffff" />
+              <MetricItem title="Vibe Check" value={dashboardData.vibe} color="#cbd5e1" />
+              <MetricItem title="Complexity" value={dashboardData.complexity} color="#94a3b8" />
+              <MetricItem title="Scalability" value={dashboardData.scalability} color="#64748b" />
             </div>
 
             <h3 style={{ fontSize: '11px', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.3em', marginTop: '50px', marginBottom: '20px', opacity: 0.8 }}>{cur.factors}</h3>
@@ -68,7 +68,7 @@ export const PDFReport = React.forwardRef<HTMLDivElement, PDFReportProps>(
                     <td style={{ padding: '20px 0', color: '#64748b', fontStyle: 'italic', fontWeight: 300 }}>{row.value}</td>
                     <td style={{ padding: '20px 0', textAlign: 'right' }}>
                         <span style={{ 
-                            fontSize: '10px', fontWeight: 700, color: row.status === 'success' ? '#10b981' : row.status === 'warning' ? '#f59e0b' : '#f43f5e', 
+                            fontSize: '10px', fontWeight: 700, color: row.status === 'success' ? '#ffffff' : row.status === 'warning' ? '#94a3b8' : '#475569', 
                             textTransform: 'uppercase', letterSpacing: '0.1em', backgroundColor: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '20px'
                         }}>
                             {row.status}

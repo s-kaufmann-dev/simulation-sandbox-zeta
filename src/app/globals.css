@@ -62,12 +62,12 @@
     @apply border-border;
   }
   body {
-    @apply bg-slate-950 text-slate-50 antialiased selection:bg-indigo-500/30 overflow-x-hidden;
-    background: radial-gradient(circle at 50% -20%, #1e1b4b 0%, #020617 100%);
+    @apply bg-black text-slate-100 antialiased selection:bg-white/20 overflow-x-hidden;
+    background: #000000;
   }
 }
 
-/* Premium Mesh Gradient */
+/* Apple Pro Pitch Black & Glass */
 .mesh-gradient {
   position: fixed;
   top: 0;
@@ -75,23 +75,30 @@
   width: 100%;
   height: 100%;
   z-index: -10;
-  background-color: #020617;
+  background-color: #000000;
   background-image: 
-    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-    radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%), 
-    radial-gradient(at 100% 0%, hsla(339,49%,30%,0.15) 0, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(20, 20, 20, 1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, rgba(30, 30, 30, 0.4) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, rgba(15, 15, 15, 0.5) 0, transparent 50%);
   filter: blur(80px);
 }
 
 .glass-card {
-  @apply bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_12px_40px_rgba(0,0,0,0.5)] ring-1 ring-white/5;
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(40px) saturate(150%);
+  -webkit-backdrop-filter: blur(40px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 .liquid-glass {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-  backdrop-filter: blur(20px) saturate(180%);
+  background: linear-gradient(180deg, rgba(30, 30, 30, 0.7) 0%, rgba(10, 10, 10, 0.8) 100%);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 @keyframes float {
@@ -101,7 +108,7 @@
 }
 
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 8s ease-in-out infinite;
 }
 
 ::-webkit-scrollbar {
@@ -113,5 +120,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full hover:bg-white/20 transition-all;
+  @apply bg-neutral-800 rounded-full hover:bg-neutral-600 transition-all;
 }

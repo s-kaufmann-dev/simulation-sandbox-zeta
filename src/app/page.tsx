@@ -35,8 +35,8 @@ export default function LandingPage() {
       <div className="mesh-gradient" />
       
       {/* Background Decor */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full animate-float" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-rose-500/5 blur-[120px] rounded-full animate-float" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-white/5 blur-[120px] rounded-full animate-float" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-white/5 blur-[120px] rounded-full animate-float" style={{ animationDelay: '2s' }} />
 
       {/* Hero Section */}
       <motion.div 
@@ -46,14 +46,14 @@ export default function LandingPage() {
         className="z-10 w-full max-w-3xl px-8 text-center"
       >
         <div className="flex items-center justify-center gap-6 mb-12">
-            <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center backdrop-blur-md">
-                <Shield className="w-7 h-7 text-rose-400" />
+            <div className="w-14 h-14 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center backdrop-blur-md">
+                <Shield className="w-7 h-7 text-white/70" />
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center backdrop-blur-md">
-                <Rocket className="w-7 h-7 text-amber-400" />
+            <div className="w-14 h-14 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center backdrop-blur-md">
+                <Rocket className="w-7 h-7 text-white/70" />
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center backdrop-blur-md">
-                <User className="w-7 h-7 text-emerald-400" />
+            <div className="w-14 h-14 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center backdrop-blur-md">
+                <User className="w-7 h-7 text-white/70" />
             </div>
         </div>
         
@@ -83,7 +83,7 @@ export default function LandingPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="relative group max-w-2xl mx-auto">
-          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition duration-1000"></div>
+          <div className="absolute -inset-1 bg-gradient-to-r from-white/10 to-white/5 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition duration-1000"></div>
           <div className="relative flex items-center bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-3 pl-8 shadow-2xl ring-1 ring-white/5 transition-all focus-within:bg-white/[0.05]">
             <Search className="w-6 h-6 text-slate-500 mr-4" />
             <Input 
@@ -95,7 +95,7 @@ export default function LandingPage() {
             <Button 
                 type="submit"
                 disabled={!concept.trim()}
-                className="bg-white text-black hover:bg-slate-200 rounded-[1.8rem] h-14 px-10 font-bold tracking-tight transition-all active:scale-95 shadow-xl shadow-indigo-500/10"
+                className="bg-white text-black hover:bg-slate-200 rounded-[1.8rem] h-14 px-10 font-bold tracking-tight transition-all active:scale-95 shadow-xl shadow-white/5"
             >
               {t.start}
               <Sparkles className="w-5 h-5 ml-3" />
@@ -105,13 +105,13 @@ export default function LandingPage() {
  
         <div className="mt-20 flex items-center justify-center gap-10 text-slate-500 text-sm font-medium tracking-widest opacity-60">
             <span className="flex items-center gap-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-rose-500" /> {t.skeptic}
+                <div className="w-1.5 h-1.5 rounded-full bg-white/50" /> {t.skeptic}
             </span>
             <span className="flex items-center gap-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-amber-500" /> {t.enthusiast}
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-400" /> {t.enthusiast}
             </span>
             <span className="flex items-center gap-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> {t.pragmatist}
+                <div className="w-1.5 h-1.5 rounded-full bg-neutral-500" /> {t.pragmatist}
             </span>
         </div>
       </motion.div>
