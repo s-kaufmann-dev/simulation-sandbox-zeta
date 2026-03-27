@@ -45,7 +45,21 @@ const AGENTS: Record<AgentType, { name: string; icon: any; color: string; bg: st
   pragmatist: { name: 'Pragmatiker', icon: User, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-500/20' }
 }
 
+import { Suspense } from 'react'
+
 export default function SimulationPage() {
+  return (
+    <Suspense fallback={
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+            <Loader2 className="w-8 h-8 text-slate-700 animate-spin" />
+        </div>
+    }>
+      <SimulationContent />
+    </Suspense>
+  )
+}
+
+function SimulationContent() {
   const searchParams = useSearchParams()
   const concept = searchParams.get('concept') || ''
   
