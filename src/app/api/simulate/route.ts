@@ -4,7 +4,7 @@ import { WorkflowEngine } from '@/lib/workflow-engine'
 export const runtime = 'edge'
 
 export async function POST(req: NextRequest) {
-  const { concept } = await req.json()
+  const { concept, userMessage, messages: context } = await req.json()
   const engine = new WorkflowEngine()
   
   const encoder = new TextEncoder()
@@ -12,6 +12,31 @@ export async function POST(req: NextRequest) {
     async start(controller) {
       const send = (data: any) => {
         controller.enqueue(encoder.encode(JSON.stringify(data) + '\n'))
+      }
+
+      if (userMessage) {
+        // Handle Follow-up Question
+        send({ type: 'status', agent: 'moderator', skill: null, message: 'Experten analysieren deine Frage...' })
+        await new Promise(r => setTimeout(r, 1500))
+
+        // Simulating 1-2 agents responding to the follow-up
+        const agent = (Math.random() > 0.5) ? 'skeptic' : 'enthusiast'
+        const agentName = agent === 'skeptic' ? 'Critical Marc' : 'Inno-Sarah'
+        const response = agent === 'skeptic' 
+          ? `Das ist ein interessanter Punkt, aber wie wirkt sich das auf die Gesamtkosten aus? Ich habe Bedenken, dass dies die Marge zu stark drückt.`
+          : `Genau das! Das würde die User Experience auf ein neues Level heben. Wir sollten das unbedingt priorisieren.`
+
+        send({ 
+          type: 'message', 
+          agent: agent, 
+          name: agentName, 
+          content: response 
+        })
+        await new Promise(r => setTimeout(r, 1000))
+
+        send({ type: 'complete' })
+        controller.close()
+        return
       }
 
       // 1. Opening

@@ -16,14 +16,16 @@ import {
   TrendingUp,
   Search,
   AlertTriangle,
-  Download
+  Download,
+  MessageSquare
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
-type AgentType = 'moderator' | 'skeptic' | 'enthusiast' | 'pragmatist'
+type AgentType = 'moderator' | 'skeptic' | 'enthusiast' | 'pragmatist' | 'user'
 
 interface Message {
   id: string
@@ -44,7 +46,8 @@ const AGENTS: Record<AgentType, { name: string; icon: any; color: string; bg: st
   moderator: { name: 'Moderator', icon: Brain, color: 'text-slate-400', bg: 'bg-slate-900/50', border: 'border-slate-800' },
   skeptic: { name: 'Skeptiker', icon: Shield, color: 'text-red-400', bg: 'bg-red-400/10', border: 'border-red-500/20' },
   enthusiast: { name: 'Enthusiast', icon: Rocket, color: 'text-green-400', bg: 'bg-green-400/10', border: 'border-green-500/20' },
-  pragmatist: { name: 'Pragmatiker', icon: User, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-500/20' }
+  pragmatist: { name: 'Pragmatiker', icon: User, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-500/20' },
+  user: { name: 'Du', icon: MessageSquare, color: 'text-slate-200', bg: 'bg-slate-800', border: 'border-slate-700' }
 }
 
 import { Suspense } from 'react'
@@ -69,7 +72,78 @@ function SimulationContent() {
   const [isSimulationComplete, setIsSimulationComplete] = useState(false)
   const [activeSkill, setActiveSkill] = useState<{ agent: AgentType; skill: string } | null>(null)
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
+  const [userQuestion, setUserQuestion] = useState('')
+  const [isSending, setIsSending] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!userQuestion.trim() || isSending) return
+
+    const question = userQuestion
+    setUserQuestion('')
+    setIsSending(true)
+
+    // Add user message to feed
+    setMessages(prev => [...prev, {
+      id: Math.random().toString(36).substr(2, 9),
+      agent: 'user',
+      name: 'Du',
+      content: question
+    }])
+
+    // Call API for follow-up
+    const response = await fetch('/api/simulate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ concept, userMessage: question, messages: messages })
+    })
+
+    if (!readerStream(response, setMessages, setActiveSkill)) {
+        setIsSending(false)
+    } else {
+        setIsSending(false)
+    }
+  }
+
+  // Helper for internal use to avoid duplicate large logic
+  const readerStream = async (response: Response, setMsgs: any, setSkill: any) => {
+    if (!response.body) return false
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ''
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop() || ''
+      for (const line of lines) {
+        if (!line) continue
+        try {
+            const data = JSON.parse(line)
+            if (data.type === 'status') {
+                setSkill(data.skill ? { agent: data.agent, skill: data.skill } : null)
+            } else if (data.type === 'message') {
+                setMsgs((prev: any) => [...prev, {
+                    id: Math.random().toString(36).substr(2, 9),
+                    agent: data.agent,
+                    name: data.name,
+                    content: data.content
+                }])
+            } else if (data.type === 'complete') {
+                setIsSimulationComplete(true)
+                if (data.dashboard) setDashboardData(data.dashboard)
+            }
+        } catch (e) {
+            console.error('Error parsing line:', e)
+        }
+      }
+    }
+    setSkill(null)
+    return true
+  }
 
   useEffect(() => {
     if (!concept) return
@@ -81,39 +155,7 @@ function SimulationContent() {
         body: JSON.stringify({ concept })
       })
 
-      if (!response.body) return
-      
-      const reader = response.body.getReader()
-      const decoder = new TextDecoder()
-      let buffer = ''
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        
-        buffer += decoder.decode(value, { stream: true })
-        const lines = buffer.split('\n')
-        buffer = lines.pop() || ''
-
-        for (const line of lines) {
-          if (!line) continue
-          const data = JSON.parse(line)
-          
-          if (data.type === 'status') {
-            setActiveSkill(data.skill ? { agent: data.agent, skill: data.skill } : null)
-          } else if (data.type === 'message') {
-            setMessages(prev => [...prev, {
-              id: Math.random().toString(36).substr(2, 9),
-              agent: data.agent,
-              name: data.name,
-              content: data.content
-            }])
-          } else if (data.type === 'complete') {
-            setIsSimulationComplete(true)
-            setDashboardData(data.dashboard)
-          }
-        }
-      }
+      await readerStream(response, setMessages, setActiveSkill)
     }
 
     startSimulation()
@@ -160,6 +202,36 @@ function SimulationContent() {
             </AnimatePresence>
             <div ref={messagesEndRef} />
           </div>
+
+          {/* Interactive Input */}
+          <AnimatePresence>
+            {isSimulationComplete && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-6 border-t border-slate-800/50 bg-slate-950/50 backdrop-blur-xl"
+              >
+                <form onSubmit={handleSendMessage} className="relative">
+                  <Input 
+                    value={userQuestion}
+                    onChange={(e) => setUserQuestion(e.target.value)}
+                    placeholder="Stelle den Experten eine Folgefrage..."
+                    className="bg-slate-900/50 border-slate-800 focus-visible:ring-slate-700 h-14 pl-6 pr-32 rounded-2xl text-slate-200 placeholder:text-slate-600 shadow-inner"
+                    disabled={isSending}
+                  />
+                  <div className="absolute right-2 top-2">
+                    <Button 
+                      disabled={!userQuestion.trim() || isSending}
+                      type="submit"
+                      className="bg-slate-100 text-slate-950 hover:bg-white rounded-xl h-10 px-4 font-semibold transition-all"
+                    >
+                      {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Senden'}
+                    </Button>
+                  </div>
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Right: Dashboard */}
