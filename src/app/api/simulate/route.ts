@@ -59,10 +59,10 @@ export async function POST(req: NextRequest) {
               { "type": "message", "agent": "moderator", "name": "${roles.moderator.split(' (')[1].replace(')', '')}", "content": "..." }
             ],
             "dashboard": {
-              "marketFit": number (Generiere einen realistischen Prozentwert zwischen 50 und 98, sei wohlwollend),
-              "vibe": number (50-98),
-              "complexity": number (40-90),
-              "scalability": number (50-98),
+              "marketFit": number (1-99, basierend auf der Bewertung: 1=katastrophal, 99=genial),
+              "vibe": number (1-99),
+              "complexity": number (1-99),
+              "scalability": number (1-99),
               "table": [
                 { "label": "string", "value": "string", "status": "success" | "warning" | "error" }
               ]
@@ -94,10 +94,10 @@ export async function POST(req: NextRequest) {
               { "type": "message", "agent": "moderator", "name": "${roles.moderator.split(' (')[1].replace(')', '')}", "content": "..." }
             ],
             "dashboard": {
-              "marketFit": number (Generiere einen realistischen Prozentwert zwischen 50 und 98, sei wohlwollend),
-              "vibe": number (50-98),
-              "complexity": number (40-90),
-              "scalability": number (50-98),
+              "marketFit": number (1-99, basierend auf der Bewertung: 1=katastrophal, 99=genial),
+              "vibe": number (1-99),
+              "complexity": number (1-99),
+              "scalability": number (1-99),
               "table": [
                 { "label": "string", "value": "string", "status": "success" | "warning" | "error" }
               ]
