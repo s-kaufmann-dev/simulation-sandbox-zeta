@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { WorkflowEngine } from '@/lib/workflow-engine'
-import path from 'path'
+
+export const runtime = 'edge'
 
 export async function POST(req: NextRequest) {
   const { concept } = await req.json()
