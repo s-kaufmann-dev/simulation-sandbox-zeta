@@ -1,19 +1,4 @@
-import fs from 'fs'
-import path from 'path'
-import yaml from 'js-yaml'
-
-export interface Agent {
-  name: string
-  role: string
-  personality: string
-  icon: string
-  color: string
-}
-
-export interface Skill {
-  name: string
-  description: string
-}
+import { workflowData, agentData, skillData } from './workflow-data'
 
 export interface WorkflowStep {
   id: string
@@ -28,40 +13,12 @@ export interface WorkflowStep {
 }
 
 export class WorkflowEngine {
-  private baseDir: string
-  private agents: Record<string, any> = {}
-  private skills: Record<string, any> = {}
-  private workflow: any = null
+  private agents = agentData
+  private skills = skillData
+  private workflow = workflowData
 
-  constructor(baseDir: string) {
-    this.baseDir = baseDir
-  }
-
-  async initialize() {
-    // Load Workflow
-    const workflowPath = path.join(this.baseDir, 'workflow.yaml')
-    const workflowContent = fs.readFileSync(workflowPath, 'utf8')
-    this.workflow = yaml.load(workflowContent)
-
-    // Load Agents
-    const agentsDir = path.join(this.baseDir, '.agent')
-    const agentFiles = fs.readdirSync(agentsDir)
-    for (const file of agentFiles) {
-      if (file.endsWith('.md')) {
-        const name = file.replace('.md', '')
-        this.agents[name] = fs.readFileSync(path.join(agentsDir, file), 'utf8')
-      }
-    }
-
-    // Load Skills
-    const skillsDir = path.join(this.baseDir, '.skills')
-    const skillFiles = fs.readdirSync(skillsDir)
-    for (const file of skillFiles) {
-      if (file.endsWith('.md')) {
-        const name = file.replace('.md', '')
-        this.skills[name] = fs.readFileSync(path.join(skillsDir, file), 'utf8')
-      }
-    }
+  constructor() {
+    // No initialization needed for static data
   }
 
   getWorkflow() {
@@ -69,12 +26,14 @@ export class WorkflowEngine {
   }
 
   getAgent(ref: string) {
-    // ref is something like "agents/moderator.md"
-    const name = path.basename(ref, '.md')
-    return this.agents[name]
+    const name = ref.split('/').pop()?.replace('.md', '') || ''
+    // Handle mapping of pragmatist to normalo if names differ
+    const key = name === 'pragmatist' ? 'normalo' : name
+    return this.agents[key] || ''
   }
 
   getSkill(name: string) {
-    return this.skills[name]
+    const key = name.replace('skill_', '')
+    return this.skills[key] || ''
   }
 }

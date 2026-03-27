@@ -5,8 +5,7 @@ export const runtime = 'edge'
 
 export async function POST(req: NextRequest) {
   const { concept } = await req.json()
-  const engine = new WorkflowEngine(process.cwd())
-  await engine.initialize()
+  const engine = new WorkflowEngine()
   
   const encoder = new TextEncoder()
   const stream = new ReadableStream({
