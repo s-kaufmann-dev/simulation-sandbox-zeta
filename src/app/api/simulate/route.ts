@@ -29,18 +29,40 @@ export async function POST(req: NextRequest) {
           Sprache für den Output: ${lang}.
           
           Vorheriger Chat-Verlauf (Zusammenfassung):
-          ${JSON.stringify(context?.slice(-4))}
+          ${JSON.stringify(context?.slice(-10))} // Erhöht auf 10 für mehr Kontext
           
-          Der User hat gerade eine Folgefrage gestellt: "${userMessage}"
+          Der User hat gerade diese Folgefrage/Anmerkung gepostet: "${userMessage}"
           
-          Antworte mit einem reinen JSON-Objekt in folgendem Format:
+          Erstelle eine neue Diskussionsrunde zwischen allen 3 Agenten, die auf die Eingabe des Users reagieren und diskutieren, wie sich das auf das Gesamtkonzept auswirkt:
+          - skeptic (Critical Marc): sehr kritisch, sucht Fehler, Kostengründe, etc.
+          - enthusiast (Inno-Sarah): extrem positiv, sucht nach Potenzialen.
+          - pragmatist (Common-Sense-Tom): praktisch, Fokus auf echte User-Needs.
+
+          Im Anschluss an die Diskussion evaluierst du das Konzept unter Berücksichtigung der neuen User-Eingaben NEU und erstellst eine angepasste Dashboard-Analyse.
+
+          Antworte mit einem reinen JSON-Objekt in folgendem Format (Keine Markdown-Blöcke!):
           {
             "events": [
               { "type": "status", "agent": "moderator", "message": "..." },
-              { "type": "message", "agent": "skeptic" | "enthusiast" | "pragmatist", "name": "Agent Name", "content": "Antwort auf die Frage" }
-            ]
+              { "type": "message", "agent": "skeptic", "name": "Agent Name", "content": "..." },
+              { "type": "message", "agent": "enthusiast", "name": "Agent Name", "content": "..." },
+              { "type": "message", "agent": "pragmatist", "name": "Agent Name", "content": "..." },
+              { "type": "status", "agent": "moderator", "skill": "skill_vibe_check", "message": "..." },
+              { "type": "message", "agent": "moderator", "name": "Dr. Logic", "content": "Zusammenfassung der neuen Runde..." }
+            ],
+            "dashboard": {
+              "marketFit": number (0-100, neu evaluiert),
+              "vibe": number (0-100),
+              "complexity": number (0-100),
+              "scalability": number (0-100),
+              "table": [
+                { "label": "string", "value": "string", "status": "success" | "warning" | "error" },
+                { "label": "string", "value": "string", "status": "success" | "warning" | "error" },
+                { "label": "string", "value": "string", "status": "success" | "warning" | "error" },
+                { "label": "string", "value": "string", "status": "success" | "warning" | "error" }
+              ]
+            }
           }
-          Lass 1-2 Agenten basierend auf ihrer Persona (Skeptiker=kritisch, Enthusiast=begeistert, Pragmatiker=praktisch) antworten. Keine Markdown-Formatierung um das JSON!
         `
       } else {
         prompt = `
@@ -105,7 +127,7 @@ export async function POST(req: NextRequest) {
           await new Promise(r => setTimeout(r, delay))
         }
 
-        if (!userMessage && parsed.dashboard) {
+        if (parsed.dashboard) {
           send({ type: 'complete', dashboard: parsed.dashboard })
         } else {
           send({ type: 'complete' })
