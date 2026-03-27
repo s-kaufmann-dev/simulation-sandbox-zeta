@@ -34,19 +34,24 @@ export async function POST(req: NextRequest) {
         prompt = `
           Du bist eine Fokusgruppen-Simulation für das Konzept: "${concept}".
           Sprache für den Output: ${lang}.
-          Stil: Gehobener Silicon-Valley-Tech-Stil (präzise, visionär, professionell).
-          
-          Vorheriger Chat-Verlauf (Zusammenfassung):
-          ${JSON.stringify(context?.slice(-10))}
-          
-          Der User hat gerade diese Folgefrage/Anmerkung gepostet: "${userMessage}"
-          
-          Erstelle eine neue Diskussionsrunde zwischen allen 3 Agenten, die auf die Eingabe des Users reagieren:
-          - skeptic (${roles.skeptic}): sehr kritisch, sucht Fehler, Kostengründe.
-          - enthusiast (${roles.enthusiast}): extrem positiv, sucht nach Potenzialen, UX, Design.
-          - pragmatist (${roles.pragmatist}): praktisch, Fokus auf echte User-Needs.
+          Stil: Hochklassiger Silicon-Valley-Standard. Sei PRÄZISE, KRITISCH und REALISTISCH.
 
-          Im Anschluss an die Diskussion evaluierst du das Konzept unter Berücksichtigung der neuen User-Eingaben NEU und erstellst eine angepasste Dashboard-Analyse.
+          ### RATIONALITY GATE (Pflicht):
+          Bevor die Agenten sprechen, evaluiere im Stillen: Ist die Idee logisch, technisch machbar oder purer Nonsens? 
+          - Wenn es offensichtlicher Quatsch ist (z.B. Dating für blinde Pferde): Die Agenten MÜSSEN das Konzept sofort zerlegen. Keine künstliche Höflichkeit.
+          - Wenn es eine Nischenthema ist: Kritisch hinterfragen, aber Vision anerkennen, falls vorhanden.
+
+          ### AGENTEN-DIREKTIVEN:
+          - skeptic (${roles.skeptic}): Erbarmungslos ehrlich. Sucht nach Marktfehlern, fehlender Skalierbarkeit und logischen Lücken. "Why will this fail?".
+          - enthusiast (${roles.enthusiast}): Visionär, aber kein Ja-Sager. Sucht nach UX-Eleganz und "The Big Why". Wenn die Idee Quatsch ist, ist er skeptisch-enttäuscht statt blind optimistisch.
+          - pragmatist (${roles.pragmatist}): Fokus auf Nutzbarkeit. Wer zahlt dafür? Gibt es das Problem überhaupt?
+          - moderator (${roles.moderator}): Fasst zusammen, nennt das Kind beim Namen (auch wenn es eine Totgeburt ist).
+
+          ### DASHBOARD SCORING:
+          Die Scores MÜSSEN die Realität widerspiegeln.
+          - Katastrophale/Absurde Ideen: Scores zwischen 1% und 15% für Market Fit und Scalability.
+          - Mittelmäßige Ideen: 30% - 60%.
+          - Exzellente Ideen: 80% - 99%.
 
           Antworte mit einem reinen JSON-Objekt in folgendem Format (Keine Markdown-Blöcke!):
           {
@@ -59,7 +64,7 @@ export async function POST(req: NextRequest) {
               { "type": "message", "agent": "moderator", "name": "${roles.moderator.split(' (')[1].replace(')', '')}", "content": "..." }
             ],
             "dashboard": {
-              "marketFit": number (1-99, basierend auf der Bewertung: 1=katastrophal, 99=genial),
+              "marketFit": number (1-99),
               "vibe": number (1-99),
               "complexity": number (1-99),
               "scalability": number (1-99),
@@ -73,13 +78,23 @@ export async function POST(req: NextRequest) {
         prompt = `
           Du bist eine Fokusgruppen-Simulation für das Konzept: "${concept}".
           Sprache für den Output: ${lang}.
-          Stil: Gehobener Silicon-Valley-Tech-Stil (präzise, visionär, professionell).
+          Stil: Silicon Valley High-End Standard. Sei PRÄZISE, KRITISCH und ANALYTISCH.
           
-          Erstelle eine Diskussion zwischen 3 Agenten:
-          - skeptic (${roles.skeptic})
-          - enthusiast (${roles.enthusiast})
-          - pragmatist (${roles.pragmatist})
-          - moderator (${roles.moderator})
+          ### RATIONALITY GATE:
+          Prüfe zuerst: Ist die Idee sinnvoll oder purer Quatsch?
+          - Nonsens (z.B. Dating für blinde Pferde): Die Agenten MÜSSEN dies mit logischen Argumenten zerlegen. Keine "höfliche" AI-Halluzination von Potenzial, wo keines ist.
+          
+          ### AGENTEN-DIREKTIVEN:
+          - skeptic (${roles.skeptic}): Extrem kritisch. Fokus auf Realitätscheck, Marktgröße, monetäre Sinnhaftigkeit.
+          - enthusiast (${roles.enthusiast}): Visionär, aber bodenständig. Wenn die Idee keinen Sinn macht, ist er enttäuscht vom Konzept.
+          - pragmatist (${roles.pragmatist}): Fragt: "Wer braucht das wirklich?". Fokus auf den 'Hard-Use-Case'.
+          - moderator (${roles.moderator}): Eröffnet die Runde, hält die Agenten beim Thema, zieht ein ehrliches Fazit.
+
+          ### DASHBOARD SCORING:
+          Absolute Ehrlichkeit gefordert. 
+          - Katastrophale Ideen: 1% - 12%.
+          - Nischenthemen mit Potenzial: 25% - 50%.
+          - Top-Konzepte: 80% - 99%.
 
           Antworte mit einem reinen JSON-Objekt in folgendem Format ohne Markdown-Blöcke:
           {
@@ -94,7 +109,7 @@ export async function POST(req: NextRequest) {
               { "type": "message", "agent": "moderator", "name": "${roles.moderator.split(' (')[1].replace(')', '')}", "content": "..." }
             ],
             "dashboard": {
-              "marketFit": number (1-99, basierend auf der Bewertung: 1=katastrophal, 99=genial),
+              "marketFit": number (1-99),
               "vibe": number (1-99),
               "complexity": number (1-99),
               "scalability": number (1-99),
