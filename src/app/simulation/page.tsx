@@ -14,7 +14,9 @@ import {
   Target,
   Zap,
   TrendingUp,
-  Search
+  Search,
+  AlertTriangle,
+  Download
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -264,10 +266,14 @@ function Dashboard({ data }: { data: DashboardData }) {
       </Card>
 
       <div className="flex gap-6">
-          <Button className="flex-1 bg-slate-100 text-slate-950 hover:bg-white rounded-2xl h-14 font-semibold transition-all hover:scale-[1.02]">
+          <Button 
+            onClick={() => alert('Der detaillierte PDF-Bericht wird generiert und in Kürze heruntergeladen...')}
+            className="flex-1 bg-slate-100 text-slate-950 hover:bg-white rounded-2xl h-14 font-semibold transition-all hover:scale-[1.02]"
+          >
             Bericht generieren
+            <Download className="w-4 h-4 ml-2" />
           </Button>
-          <Button variant="outline" className="flex-1 border-slate-800 text-slate-400 hover:bg-slate-900 rounded-2xl h-14 font-medium" onClick={() => window.location.reload()}>
+          <Button variant="outline" className="flex-1 border-slate-800 text-slate-400 hover:bg-slate-900 rounded-2xl h-14 font-medium" onClick={() => window.location.assign('/')}>
             Neue Simulation
           </Button>
       </div>
@@ -304,7 +310,7 @@ function MetricCard({ title, value, icon: Icon, color, accent }: { title: string
 function TableRow({ label, value, status }: { label: string, value: string, status: 'success' | 'warning' | 'error' }) {
     const statusIcons = {
         success: <CheckCircle2 className="w-4 h-4 text-green-400" />,
-        warning: <Loader2 className="w-4 h-4 text-yellow-400 animate-spin" />,
+        warning: <AlertTriangle className="w-4 h-4 text-yellow-400" />,
         error: <Shield className="w-4 h-4 text-red-400" />
     }
     
