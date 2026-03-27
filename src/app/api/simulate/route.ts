@@ -1,4 +1,7 @@
 import { NextRequest } from 'next/server'
+
+export const runtime = 'edge'
+
 export async function POST(req: NextRequest) {
   const { concept, userMessage, messages: context, lang = 'DE' } = await req.json()
   
