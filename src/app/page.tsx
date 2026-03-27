@@ -9,12 +9,15 @@ import { Button } from '@/components/ui/button'
 
 export default function LandingPage() {
   const [concept, setConcept] = useState('')
+  const [lang, setLang] = useState('DE')
   const router = useRouter()
+
+  const languages = ['DE', 'EN', 'FR', 'IT', 'ES']
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (concept.trim()) {
-      router.push(`/simulation?concept=${encodeURIComponent(concept)}`)
+      router.push(`/simulation?concept=${encodeURIComponent(concept)}&lang=${lang}`)
     }
   }
 
@@ -44,6 +47,23 @@ export default function LandingPage() {
         <p className="text-slate-400 text-lg mb-12 font-light">
             Lasse dein Produkt von einer synthetischen Expertengruppe analysieren, kritisieren und optimieren.
         </p>
+
+        <div className="flex items-center justify-center gap-2 mb-10">
+          {languages.map((l) => (
+            <button
+              key={l}
+              onClick={() => setLang(l)}
+              type="button"
+              className={`w-10 h-10 rounded-xl text-[10px] font-bold transition-all border ${
+                lang === l 
+                  ? 'bg-slate-100 text-slate-950 border-slate-100 shadow-[0_0_20px_rgba(255,255,255,0.1)]' 
+                  : 'bg-slate-900/50 text-slate-500 border-slate-800 hover:border-slate-700'
+              }`}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
 
         <form onSubmit={handleSubmit} className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl blur opacity-25 group-focus-within:opacity-50 transition duration-500"></div>

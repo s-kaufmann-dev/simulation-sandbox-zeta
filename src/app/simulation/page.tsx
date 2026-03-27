@@ -67,6 +67,7 @@ export default function SimulationPage() {
 function SimulationContent() {
   const searchParams = useSearchParams()
   const concept = searchParams.get('concept') || ''
+  const lang = searchParams.get('lang') || 'DE'
   
   const [messages, setMessages] = useState<Message[]>([])
   const [isSimulationComplete, setIsSimulationComplete] = useState(false)
@@ -75,6 +76,27 @@ function SimulationContent() {
   const [userQuestion, setUserQuestion] = useState('')
   const [isSending, setIsSending] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const handleDownload = () => {
+    const reportTitle = `Simulation_Report_${concept.replace(/\s+/g, '_')}.md`
+    const content = `# Fokusgruppen-Bericht: ${concept}\n\n` +
+      `**Sprache:** ${lang}\n` +
+      `**Datum:** ${new Date().toLocaleDateString()}\n\n` +
+      `## Zusammenfassung der Diskussion\n\n` +
+      messages.map(m => `### ${m.name} (${m.agent})\n${m.content}\n`).join('\n') +
+      `\n## Analyse-Werte\n` +
+      (dashboardData ? `- Market Fit: ${dashboardData.marketFit}%\n- Vibe Check: ${dashboardData.vibe}%\n- Komplexität: ${dashboardData.complexity}%\n- Skalierbarkeit: ${dashboardData.scalability}%\n` : '')
+
+    const blob = new Blob([content], { type: 'text/markdown' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = reportTitle
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -96,10 +118,10 @@ function SimulationContent() {
     const response = await fetch('/api/simulate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ concept, userMessage: question, messages: messages })
+      body: JSON.stringify({ concept, userMessage: question, messages: messages, lang })
     })
 
-    if (!readerStream(response, setMessages, setActiveSkill)) {
+    if (!await readerStream(response, setMessages, setActiveSkill)) {
         setIsSending(false)
     } else {
         setIsSending(false)
@@ -152,14 +174,14 @@ function SimulationContent() {
       const response = await fetch('/api/simulate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ concept })
+        body: JSON.stringify({ concept, lang })
       })
 
       await readerStream(response, setMessages, setActiveSkill)
     }
 
     startSimulation()
-  }, [concept])
+  }, [concept, lang])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -241,7 +263,7 @@ function SimulationContent() {
             animate={{ opacity: 1, x: 0 }}
             className="flex-1 border-l border-slate-800 bg-slate-900/40 p-10 overflow-y-auto scrollbar-hide"
           >
-            {dashboardData && <Dashboard data={dashboardData} />}
+            {dashboardData && <Dashboard data={dashboardData} onDownload={handleDownload} />}
           </motion.div>
         )}
       </main>
@@ -298,7 +320,7 @@ function ThinkingItem({ agent, skill }: { agent: AgentType, skill: string }) {
   )
 }
 
-function Dashboard({ data }: { data: DashboardData }) {
+function Dashboard({ data, onDownload }: { data: DashboardData, onDownload: () => void }) {
   return (
     <div className="max-w-4xl mx-auto space-y-12">
       <div className="flex items-center justify-between">
@@ -339,7 +361,7 @@ function Dashboard({ data }: { data: DashboardData }) {
 
       <div className="flex gap-6">
           <Button 
-            onClick={() => alert('Der detaillierte PDF-Bericht wird generiert und in Kürze heruntergeladen...')}
+            onClick={onDownload}
             className="flex-1 bg-slate-100 text-slate-950 hover:bg-white rounded-2xl h-14 font-semibold transition-all hover:scale-[1.02]"
           >
             Bericht generieren
