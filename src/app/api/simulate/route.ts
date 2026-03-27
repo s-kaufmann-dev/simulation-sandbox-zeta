@@ -20,23 +20,31 @@ export async function POST(req: NextRequest) {
         return
       }
 
-      send({ type: 'status', agent: 'moderator', skill: null, message: lang === 'DE' ? 'KI generiert Simulation...' : 'AI is generating simulation...' })
-      
+      const roleMap: any = {
+        DE: { skeptic: "Skeptiker (Critical Marc)", enthusiast: "Enthusiast (Inno-Sarah)", pragmatist: "Pragmatiker (Common-Sense-Tom)", moderator: "Moderator (Dr. Logic)" },
+        EN: { skeptic: "Skeptic (Critical Mark)", enthusiast: "Enthusiast (Inno-Sarah)", pragmatist: "Pragmatist (Practical Tom)", moderator: "Moderator (Dr. Logic)" },
+        FR: { skeptic: "Sceptique (Marc Critique)", enthusiast: "Enthousiaste (Inno-Sarah)", pragmatist: "Pragmatique (Tom Pratique)", moderator: "Modérateur (Dr. Logic)" },
+        IT: { skeptic: "Scettico (Marc Critico)", enthusiast: "Entusiasta (Inno-Sarah)", pragmatist: "Pragmatico (Tom Pratico)", moderator: "Moderatore (Dr. Logic)" },
+        ES: { skeptic: "Escéptico (Marc Crítico)", enthusiast: "Entusiasta (Inno-Sarah)", pragmatist: "Pragmático (Tom Práctico)", moderator: "Moderador (Dr. Logic)" }
+      }
+      const roles = roleMap[lang] || roleMap.EN
+
       let prompt = ''
       if (userMessage) {
         prompt = `
           Du bist eine Fokusgruppen-Simulation für das Konzept: "${concept}".
           Sprache für den Output: ${lang}.
+          Stil: Gehobener Silicon-Valley-Tech-Stil (präzise, visionär, professionell).
           
           Vorheriger Chat-Verlauf (Zusammenfassung):
-          ${JSON.stringify(context?.slice(-10))} // Erhöht auf 10 für mehr Kontext
+          ${JSON.stringify(context?.slice(-10))}
           
           Der User hat gerade diese Folgefrage/Anmerkung gepostet: "${userMessage}"
           
-          Erstelle eine neue Diskussionsrunde zwischen allen 3 Agenten, die auf die Eingabe des Users reagieren und diskutieren, wie sich das auf das Gesamtkonzept auswirkt:
-          - skeptic (Critical Marc): sehr kritisch, sucht Fehler, Kostengründe, etc.
-          - enthusiast (Inno-Sarah): extrem positiv, sucht nach Potenzialen.
-          - pragmatist (Common-Sense-Tom): praktisch, Fokus auf echte User-Needs.
+          Erstelle eine neue Diskussionsrunde zwischen allen 3 Agenten, die auf die Eingabe des Users reagieren:
+          - skeptic (${roles.skeptic}): sehr kritisch, sucht Fehler, Kostengründe.
+          - enthusiast (${roles.enthusiast}): extrem positiv, sucht nach Potenzialen, UX, Design.
+          - pragmatist (${roles.pragmatist}): praktisch, Fokus auf echte User-Needs.
 
           Im Anschluss an die Diskussion evaluierst du das Konzept unter Berücksichtigung der neuen User-Eingaben NEU und erstellst eine angepasste Dashboard-Analyse.
 
@@ -44,21 +52,18 @@ export async function POST(req: NextRequest) {
           {
             "events": [
               { "type": "status", "agent": "moderator", "message": "..." },
-              { "type": "message", "agent": "skeptic", "name": "Agent Name", "content": "..." },
-              { "type": "message", "agent": "enthusiast", "name": "Agent Name", "content": "..." },
-              { "type": "message", "agent": "pragmatist", "name": "Agent Name", "content": "..." },
+              { "type": "message", "agent": "skeptic", "name": "${roles.skeptic.split(' (')[1].replace(')', '')}", "content": "..." },
+              { "type": "message", "agent": "enthusiast", "name": "${roles.enthusiast.split(' (')[1].replace(')', '')}", "content": "..." },
+              { "type": "message", "agent": "pragmatist", "name": "${roles.pragmatist.split(' (')[1].replace(')', '')}", "content": "..." },
               { "type": "status", "agent": "moderator", "skill": "skill_vibe_check", "message": "..." },
-              { "type": "message", "agent": "moderator", "name": "Dr. Logic", "content": "Zusammenfassung der neuen Runde..." }
+              { "type": "message", "agent": "moderator", "name": "${roles.moderator.split(' (')[1].replace(')', '')}", "content": "..." }
             ],
             "dashboard": {
-              "marketFit": number (0-100, neu evaluiert),
-              "vibe": number (0-100),
-              "complexity": number (0-100),
-              "scalability": number (0-100),
+              "marketFit": number,
+              "vibe": number,
+              "complexity": number,
+              "scalability": number,
               "table": [
-                { "label": "string", "value": "string", "status": "success" | "warning" | "error" },
-                { "label": "string", "value": "string", "status": "success" | "warning" | "error" },
-                { "label": "string", "value": "string", "status": "success" | "warning" | "error" },
                 { "label": "string", "value": "string", "status": "success" | "warning" | "error" }
               ]
             }
@@ -68,34 +73,32 @@ export async function POST(req: NextRequest) {
         prompt = `
           Du bist eine Fokusgruppen-Simulation für das Konzept: "${concept}".
           Sprache für den Output: ${lang}.
+          Stil: Gehobener Silicon-Valley-Tech-Stil (präzise, visionär, professionell).
           
           Erstelle eine Diskussion zwischen 3 Agenten:
-          - skeptic (Critical Marc): sehr kritisch, sucht Fehler, Datenschutz, Kosten.
-          - enthusiast (Inno-Sarah): extrem positiv, liebt Marketing, Design, UX, Hype.
-          - pragmatist (Common-Sense-Tom): praktisch, Fokus auf Nutzbarkeit, im Alltag.
-          - moderator (Dr. Logic): leitet die Diskussion.
+          - skeptic (${roles.skeptic})
+          - enthusiast (${roles.enthusiast})
+          - pragmatist (${roles.pragmatist})
+          - moderator (${roles.moderator})
 
-          Antworte mit einem reinen JSON-Objekt in folgendem Format ohne Markdown-Blöcke (Nur rohes JSON):
+          Antworte mit einem reinen JSON-Objekt in folgendem Format ohne Markdown-Blöcke:
           {
             "events": [
               { "type": "status", "agent": "moderator", "message": "..." },
-              { "type": "message", "agent": "moderator", "name": "Dr. Logic", "content": "..." },
+              { "type": "message", "agent": "moderator", "name": "${roles.moderator.split(' (')[1].replace(')', '')}", "content": "..." },
               { "type": "status", "agent": "skeptic", "skill": "skill_web_search", "message": "..." },
-              { "type": "message", "agent": "skeptic", "name": "Critical Marc", "content": "..." },
-              { "type": "message", "agent": "enthusiast", "name": "Inno-Sarah", "content": "..." },
-              { "type": "message", "agent": "pragmatist", "name": "Common-Sense-Tom", "content": "..." },
+              { "type": "message", "agent": "skeptic", "name": "${roles.skeptic.split(' (')[1].replace(')', '')}", "content": "..." },
+              { "type": "message", "agent": "enthusiast", "name": "${roles.enthusiast.split(' (')[1].replace(')', '')}", "content": "..." },
+              { "type": "message", "agent": "pragmatist", "name": "${roles.pragmatist.split(' (')[1].replace(')', '')}", "content": "..." },
               { "type": "status", "agent": "moderator", "skill": "skill_vibe_check", "message": "..." },
-              { "type": "message", "agent": "moderator", "name": "Dr. Logic", "content": "..." }
+              { "type": "message", "agent": "moderator", "name": "${roles.moderator.split(' (')[1].replace(')', '')}", "content": "..." }
             ],
             "dashboard": {
-              "marketFit": number (0-100, ehrlich basierend auf der Idee),
-              "vibe": number (0-100),
-              "complexity": number (0-100),
-              "scalability": number (0-100),
+              "marketFit": number,
+              "vibe": number,
+              "complexity": number,
+              "scalability": number,
               "table": [
-                { "label": "string", "value": "string", "status": "success" | "warning" | "error" },
-                { "label": "string", "value": "string", "status": "success" | "warning" | "error" },
-                { "label": "string", "value": "string", "status": "success" | "warning" | "error" },
                 { "label": "string", "value": "string", "status": "success" | "warning" | "error" }
               ]
             }

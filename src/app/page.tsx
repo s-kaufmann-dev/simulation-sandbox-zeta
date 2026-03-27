@@ -21,43 +21,60 @@ export default function LandingPage() {
     }
   }
 
+  const content: any = {
+    DE: { headline: 'Simulation', sub: 'Sandbox', desc: 'Lasse dein Produkt von einer synthetischen Expertengruppe analysieren, kritisieren und optimieren.', placeholder: 'Welches Produkt-Konzept sollen die Agenten heute zerlegen?', start: 'Starten', skeptic: 'Skeptiker', enthusiast: 'Enthusiast', pragmatist: 'Pragmatiker' },
+    EN: { headline: 'Simulation', sub: 'Sandbox', desc: 'Have your product concept analyzed, criticized, and optimized by a synthetic panel of experts.', placeholder: 'Which product concept should the agents dismantle today?', start: 'Start', skeptic: 'Skeptic', enthusiast: 'Enthusiast', pragmatist: 'Pragmatist' },
+    FR: { headline: 'Simulation', sub: 'Sandbox', desc: 'Faites analyser, critiquer et optimiser votre concept produit par un panel d\'experts synthétiques.', placeholder: 'Quel concept de produit les agents doivent-ils démonter aujourd\'hui ?', start: 'Démarrer', skeptic: 'Sceptique', enthusiast: 'Enthousiaste', pragmatist: 'Pragmatique' },
+    IT: { headline: 'Simulazione', sub: 'Sandbox', desc: 'Fai analizzare, criticare e ottimizzare il tuo concept di prodotto da un panel di esperti sintetici.', placeholder: 'Quale concept di prodotto dovrebbero smantellare oggi gli agenti?', start: 'Inizia', skeptic: 'Scettico', enthusiast: 'Entusiasta', pragmatist: 'Pragmatico' },
+    ES: { headline: 'Simulación', sub: 'Sandbox', desc: 'Haz que tu concepto de producto sea analizado, criticado y optimizado por un panel de expertos sintéticos.', placeholder: '¿Qué concepto de producto deberían desmontar hoy los agentes?', start: 'Empezar', skeptic: 'Escéptico', enthusiast: 'Entusiasta', pragmatist: 'Pragmático' }
+  }
+  const t = content[lang] || content.EN
+
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-slate-950 overflow-hidden">
-      {/* Background Glows */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-transparent overflow-hidden selection:bg-indigo-500/30">
+      <div className="mesh-gradient" />
+      
+      {/* Background Decor */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full animate-float" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-rose-500/5 blur-[120px] rounded-full animate-float" style={{ animationDelay: '2s' }} />
 
       {/* Hero Section */}
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="z-10 w-full max-w-2xl px-6 text-center"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        className="z-10 w-full max-w-3xl px-8 text-center"
       >
-        <div className="flex items-center justify-center gap-3 mb-8">
-            <Shield className="w-8 h-8 text-red-400/80" />
-            <Rocket className="w-8 h-8 text-green-400/80" />
-            <User className="w-8 h-8 text-blue-400/80" />
+        <div className="flex items-center justify-center gap-6 mb-12">
+            <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center backdrop-blur-md">
+                <Shield className="w-7 h-7 text-rose-400" />
+            </div>
+            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center backdrop-blur-md">
+                <Rocket className="w-7 h-7 text-amber-400" />
+            </div>
+            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center backdrop-blur-md">
+                <User className="w-7 h-7 text-emerald-400" />
+            </div>
         </div>
         
-        <h1 className="text-4xl md:text-6xl font-light tracking-tight text-slate-100 mb-6 font-display">
-            Simulation <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-slate-200 to-slate-400">Sandbox</span>
+        <h1 className="text-5xl md:text-8xl font-extralight tracking-tighter text-white mb-8">
+            {t.headline} <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">{t.sub}</span>
         </h1>
         
-        <p className="text-slate-400 text-lg mb-12 font-light">
-            Lasse dein Produkt von einer synthetischen Expertengruppe analysieren, kritisieren und optimieren.
+        <p className="text-slate-400 text-lg md:text-xl mb-16 font-light tracking-wide max-w-xl mx-auto leading-relaxed">
+            {t.desc}
         </p>
 
-        <div className="flex items-center justify-center gap-2 mb-10">
+        <div className="flex items-center justify-center gap-3 mb-12">
           {languages.map((l) => (
             <button
               key={l}
               onClick={() => setLang(l)}
               type="button"
-              className={`w-10 h-10 rounded-xl text-[10px] font-bold transition-all border ${
+              className={`w-12 h-12 rounded-2xl text-[11px] font-bold transition-all border backdrop-blur-xl ${
                 lang === l 
-                  ? 'bg-slate-100 text-slate-950 border-slate-100 shadow-[0_0_20px_rgba(255,255,255,0.1)]' 
-                  : 'bg-slate-900/50 text-slate-500 border-slate-800 hover:border-slate-700'
+                  ? 'bg-white text-black border-white shadow-[0_0_30px_rgba(255,255,255,0.2)] scale-110 font-bold' 
+                  : 'bg-white/5 text-slate-500 border-white/5 hover:bg-white/10 hover:border-white/10'
               }`}
             >
               {l}
@@ -65,43 +82,43 @@ export default function LandingPage() {
           ))}
         </div>
 
-        <form onSubmit={handleSubmit} className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl blur opacity-25 group-focus-within:opacity-50 transition duration-500"></div>
-          <div className="relative flex items-center bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-2xl p-2 pl-6">
-            <Search className="w-5 h-5 text-slate-500 mr-4" />
+        <form onSubmit={handleSubmit} className="relative group max-w-2xl mx-auto">
+          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition duration-1000"></div>
+          <div className="relative flex items-center bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-3 pl-8 shadow-2xl ring-1 ring-white/5 transition-all focus-within:bg-white/[0.05]">
+            <Search className="w-6 h-6 text-slate-500 mr-4" />
             <Input 
               value={concept}
               onChange={(e) => setConcept(e.target.value)}
-              placeholder="Welches Produkt-Konzept sollen die Agenten heute zerlegen?"
-              className="bg-transparent border-none focus-visible:ring-0 text-slate-200 placeholder:text-slate-600 text-lg h-14"
+              placeholder={t.placeholder}
+              className="bg-transparent border-none focus-visible:ring-0 text-white placeholder:text-slate-600 text-lg md:text-xl h-16 font-light"
             />
             <Button 
                 type="submit"
                 disabled={!concept.trim()}
-                className="bg-slate-100 text-slate-950 hover:bg-white rounded-xl h-12 px-8 font-medium transition-all"
+                className="bg-white text-black hover:bg-slate-200 rounded-[1.8rem] h-14 px-10 font-bold tracking-tight transition-all active:scale-95 shadow-xl shadow-indigo-500/10"
             >
-              Starten
-              <Sparkles className="w-4 h-4 ml-2" />
+              {t.start}
+              <Sparkles className="w-5 h-5 ml-3" />
             </Button>
           </div>
         </form>
-
-        <div className="mt-12 flex items-center justify-center gap-8 text-slate-500 text-sm font-medium">
-            <span className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-red-500/50" /> Skeptiker
+ 
+        <div className="mt-20 flex items-center justify-center gap-10 text-slate-500 text-sm font-medium tracking-widest opacity-60">
+            <span className="flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-rose-500" /> {t.skeptic}
             </span>
-            <span className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-green-500/50" /> Enthusiast
+            <span className="flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-amber-500" /> {t.enthusiast}
             </span>
-            <span className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-blue-500/50" /> Pragmatiker
+            <span className="flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> {t.pragmatist}
             </span>
         </div>
       </motion.div>
 
       {/* Footer Decoration */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-slate-600 text-[10px] tracking-[0.2em] uppercase font-bold">
-        Project Zeta // Advanced Agentic AI
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-slate-600 text-[10px] tracking-[0.4em] uppercase font-bold opacity-40">
+        Project Zeta // Silicon Valley Standard
       </div>
     </div>
   )
