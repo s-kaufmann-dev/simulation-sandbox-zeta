@@ -202,6 +202,12 @@ function SimulationContent() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, activeSkill])
 
+  useEffect(() => {
+    if (isSimulationComplete) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [isSimulationComplete])
+
   return (
     <div className="min-h-screen bg-transparent text-slate-100 flex flex-col selection:bg-indigo-500/30">
       <div className="mesh-gradient" />
