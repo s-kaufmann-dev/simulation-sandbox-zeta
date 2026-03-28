@@ -205,36 +205,36 @@ function SimulationContent() {
   return (
     <div className="min-h-screen bg-transparent text-slate-100 flex flex-col selection:bg-indigo-500/30">
       <div className="mesh-gradient" />
-      <header className="h-20 border-b border-white/5 bg-black/40 backdrop-blur-2xl flex items-center justify-between px-10 sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <Brain className="w-6 h-6 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
-          <h2 className="text-sm font-medium tracking-tight">Focus Group Simulation</h2>
-          <div className="h-4 w-px bg-slate-700" />
-          <span className="text-sm text-slate-500 font-light truncate max-w-[200px]">{concept}</span>
+      <header className="h-16 lg:h-20 border-b border-white/5 bg-black/40 backdrop-blur-2xl flex items-center justify-between px-4 lg:px-10 sticky top-0 z-50">
+        <div className="flex items-center gap-2 lg:gap-4 overflow-hidden">
+          <Brain className="w-5 h-5 lg:w-6 lg:h-6 text-white shrink-0 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+          <h2 className="text-[10px] lg:text-sm font-medium tracking-tight whitespace-nowrap">Focus Group</h2>
+          <div className="h-4 w-px bg-slate-700 shrink-0" />
+          <span className="text-[10px] lg:text-sm text-slate-500 font-light truncate max-w-[100px] lg:max-w-[200px]">{concept}</span>
         </div>
         
         {isSimulationComplete ? (
-            <Badge variant="outline" className="bg-white/5 text-white border-white/10 gap-1.5 py-1 px-3">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                Fertiggestellt
+            <Badge variant="outline" className="bg-white/5 text-white border-white/10 gap-1.5 py-0.5 lg:py-1 px-2 lg:px-3 text-[10px] lg:text-xs">
+                <CheckCircle2 className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                Fertig
             </Badge>
         ) : (
-            <Badge variant="outline" className="bg-white/5 text-slate-300 border-white/10 gap-1.5 py-1 px-3 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                Live Simulation
+            <Badge variant="outline" className="bg-white/5 text-slate-300 border-white/10 gap-1.5 py-0.5 lg:py-1 px-2 lg:px-3 text-[10px] lg:text-xs shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                <Loader2 className="w-3 h-3 lg:w-3.5 lg:h-3.5 animate-spin" />
+                Live
             </Badge>
         )}
       </header>
 
-      <main className="flex-1 flex overflow-hidden">
+      <main className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
         {/* Hidden PDF Component */}
         <div style={{ position: 'absolute', top: '-9999px', left: '-9999px' }}>
             <PDFReport ref={reportRef} concept={concept} lang={lang} messages={messages} dashboardData={dashboardData} />
         </div>
 
-        {/* Left: Chat Feed */}
-        <div className={`flex-1 flex flex-col transition-all duration-1000 bg-black/20 ${isSimulationComplete ? 'max-w-[42%]' : 'max-w-full'}`}>
-          <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide">
+        {/* Chat Feed - Order 2 on mobile, 1 on desktop */}
+        <div className={`flex flex-col transition-all duration-1000 bg-black/20 order-2 lg:order-1 ${isSimulationComplete ? 'w-full lg:max-w-[42%] lg:h-full' : 'w-full lg:h-full'}`}>
+          <div className="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6 lg:space-y-10 scrollbar-hide min-h-[400px]">
             <AnimatePresence>
               {messages.map((msg) => (
                 <MessageItem key={msg.id} message={msg} lang={lang} />
@@ -260,14 +260,14 @@ function SimulationContent() {
                     value={userQuestion}
                     onChange={(e) => setUserQuestion(e.target.value)}
                     placeholder={lang === 'DE' ? "Stelle den Experten eine Folgefrage..." : "Ask the experts a follow-up question..."}
-                    className="bg-white/5 border-white/10 focus-visible:ring-white/20 h-16 pl-8 pr-36 rounded-[2rem] text-slate-100 placeholder:text-slate-500 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all focus:bg-white/[0.08]"
+                    className="bg-white/5 border-white/10 focus-visible:ring-white/20 h-14 lg:h-16 pl-6 lg:pl-8 pr-32 lg:pr-36 rounded-[2rem] text-sm lg:text-base text-slate-100 placeholder:text-slate-500 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all focus:bg-white/[0.08]"
                     disabled={isSending}
                   />
-                  <div className="absolute right-3 top-3">
+                  <div className="absolute right-2 lg:right-3 top-2 lg:top-3">
                     <Button 
                       disabled={!userQuestion.trim() || isSending}
                       type="submit"
-                      className="bg-white text-black hover:bg-slate-200 rounded-[1.5rem] h-10 px-6 font-bold tracking-tight transition-all active:scale-95"
+                      className="bg-white text-black hover:bg-slate-200 rounded-[1.5rem] h-10 px-4 lg:px-6 font-bold tracking-tight transition-all active:scale-95 text-xs lg:text-sm"
                     >
                       {isSending ? <Loader2 className="w-4 h-4 animate-spin text-black" /> : (lang === 'DE' ? 'Senden' : 'Send')}
                     </Button>
@@ -278,12 +278,12 @@ function SimulationContent() {
           </AnimatePresence>
         </div>
 
-        {/* Right: Dashboard */}
+        {/* Dashboard - Order 1 on mobile, 2 on desktop */}
         {isSimulationComplete && (
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex-1 border-l border-white/5 bg-white/[0.01] backdrop-blur-3xl p-12 overflow-y-auto scrollbar-hide"
+            className="flex-1 border-t lg:border-t-0 lg:border-l border-white/5 bg-white/[0.01] backdrop-blur-3xl p-6 lg:p-12 overflow-y-auto scrollbar-hide order-1 lg:order-2"
           >
             {dashboardData && <Dashboard data={dashboardData} onDownload={handleDownload} isDownloading={isDownloading} lang={lang} />}
           </motion.div>
@@ -301,18 +301,18 @@ function MessageItem({ message, lang }: { message: Message, lang: string }) {
     <motion.div
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      className="flex gap-6 items-start"
+      className="flex gap-3 lg:gap-6 items-start"
     >
-      <div className={`w-14 h-14 rounded-[1.5rem] ${agent.bg} ${agent.border || 'border border-white/5'} flex items-center justify-center shrink-0 shadow-2xl relative overflow-hidden group`}>
+      <div className={`w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-[1.5rem] ${agent.bg} ${agent.border || 'border border-white/5'} flex items-center justify-center shrink-0 shadow-2xl relative overflow-hidden group`}>
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50" />
-        <Icon className={`w-7 h-7 ${agent.color} relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]`} />
+        <Icon className={`w-5 h-5 lg:w-7 lg:h-7 ${agent.color} relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]`} />
       </div>
-      <div className="flex-1 space-y-3">
+      <div className="flex-1 space-y-2 lg:space-y-3">
         <div className="flex items-center gap-3 px-1">
-          <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-slate-500 opacity-80">{agent.name}</span>
+          <span className="text-[9px] lg:text-[11px] font-bold uppercase tracking-[0.25em] text-slate-500 opacity-80">{agent.name}</span>
           <div className="h-[1px] flex-1 bg-gradient-to-r from-white/5 to-transparent" />
         </div>
-        <div className="bg-white/[0.03] border border-white/5 backdrop-blur-xl p-6 rounded-[1.8rem] text-[15px] text-slate-100 leading-[1.7] shadow-2xl relative overflow-hidden ring-1 ring-white/5 group-hover:bg-white/[0.05] transition-all duration-500">
+        <div className="bg-white/[0.03] border border-white/5 backdrop-blur-xl p-4 lg:p-6 rounded-2xl lg:rounded-[1.8rem] text-sm lg:text-[15px] text-slate-100 leading-[1.6] lg:leading-[1.7] shadow-2xl relative overflow-hidden ring-1 ring-white/5 group-hover:bg-white/[0.05] transition-all duration-500">
            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-white/[0.02] to-transparent pointer-events-none" />
           {message.content}
         </div>
@@ -328,14 +328,14 @@ function ThinkingItem({ agent, skill, lang }: { agent: AgentType, skill: string,
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex gap-4 items-center pl-20 py-2"
+      className="flex gap-4 items-center pl-12 lg:pl-20 py-2"
     >
-      <div className="flex gap-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-blue-400/80 animate-pulse" />
-        <span className="w-1.5 h-1.5 rounded-full bg-blue-400/80 animate-pulse delay-75" />
-        <span className="w-1.5 h-1.5 rounded-full bg-blue-400/80 animate-pulse delay-150" />
+      <div className="flex gap-1">
+        <span className="w-1 lg:w-1.5 h-1 lg:h-1.5 rounded-full bg-blue-400/80 animate-pulse" />
+        <span className="w-1 lg:w-1.5 h-1 lg:h-1.5 rounded-full bg-blue-400/80 animate-pulse delay-75" />
+        <span className="w-1 lg:w-1.5 h-1 lg:h-1.5 rounded-full bg-blue-400/80 animate-pulse delay-150" />
       </div>
-      <span className="text-[13px] text-slate-500 font-medium italic tracking-wide opacity-70">
+      <span className="text-[11px] lg:text-[13px] text-slate-500 font-medium italic tracking-wide opacity-70">
         {agentInfo.name} nutzt {skill}...
       </span>
     </motion.div>
@@ -353,50 +353,52 @@ function Dashboard({ data, onDownload, isDownloading, lang }: { data: DashboardD
   const cur = t[lang] || t.EN
 
   return (
-    <div className="max-w-4xl mx-auto space-y-16">
+    <div className="max-w-4xl mx-auto space-y-8 lg:space-y-16">
       <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h2 className="text-4xl font-extralight tracking-tight text-white/90">{cur.title}</h2>
-          <p className="text-slate-500 text-sm font-light tracking-wide">{cur.sub}</p>
+        <div className="space-y-1 lg:space-y-2">
+          <h2 className="text-2xl lg:text-4xl font-extralight tracking-tight text-white/90">{cur.title}</h2>
+          <p className="text-slate-500 text-[10px] lg:text-sm font-light tracking-wide">{cur.sub}</p>
         </div>
-        <div className="w-14 h-14 rounded-[1.5rem] bg-white/5 border border-white/10 flex items-center justify-center shadow-2xl backdrop-blur-md">
-            <LayoutDashboard className="w-6 h-6 text-slate-400" />
+        <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-[1.5rem] bg-white/5 border border-white/10 flex items-center justify-center shadow-2xl backdrop-blur-md shrink-0">
+            <LayoutDashboard className="w-5 h-5 lg:w-6 lg:h-6 text-slate-400" />
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-10">
         <MetricCard title="Market Fit" value={data.marketFit} icon={Target} color="text-white" accent="bg-white" />
         <MetricCard title="Vibe Check" value={data.vibe} icon={Zap} color="text-slate-300" accent="bg-slate-300" />
         <MetricCard title="Complexity" value={data.complexity} icon={Brain} color="text-slate-400" accent="bg-slate-400" />
         <MetricCard title="Scalability" value={data.scalability} icon={TrendingUp} color="text-slate-500" accent="bg-slate-500" />
       </div>
 
-      <Card className="bg-white/[0.02] border-white/5 backdrop-blur-3xl p-10 rounded-[2.5rem] overflow-hidden relative shadow-2xl ring-1 ring-white/5">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 blur-[100px] rounded-full -mr-20 -mt-20" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 blur-[100px] rounded-full -ml-20 -mb-20" />
+      <Card className="bg-white/[0.02] border-white/5 backdrop-blur-3xl p-6 lg:p-10 rounded-3xl lg:rounded-[2.5rem] overflow-hidden relative shadow-2xl ring-1 ring-white/5">
+        <div className="absolute top-0 right-0 w-32 lg:w-64 h-32 lg:h-64 bg-white/5 blur-[60px] lg:blur-[100px] rounded-full -mr-10 lg:-mr-20 -mt-10 lg:-mt-20" />
+        <div className="absolute bottom-0 left-0 w-32 lg:w-64 h-32 lg:h-64 bg-white/5 blur-[60px] lg:blur-[100px] rounded-full -ml-10 lg:-ml-20 -mb-10 lg:-mb-20" />
         
-        <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-slate-500 mb-10 opacity-70">{cur.detail}</h3>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-slate-500 border-b border-white/5 uppercase text-[10px] tracking-[0.2em] font-bold">
-              <th className="pb-6 text-left">{cur.fact}</th>
-              <th className="pb-6 text-left">{cur.eval}</th>
-              <th className="pb-6 text-right">{cur.stat}</th>
-            </tr>
-          </thead>
-          <tbody className="text-slate-300">
-            {data.table.map((row, i) => (
-              <TableRow key={i} {...row} />
-            ))}
-          </tbody>
-        </table>
+        <h3 className="text-[9px] lg:text-[11px] font-bold uppercase tracking-[0.3em] text-slate-500 mb-6 lg:mb-10 opacity-70">{cur.detail}</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[12px] lg:text-sm min-w-[300px]">
+            <thead>
+              <tr className="text-slate-500 border-b border-white/5 uppercase text-[9px] lg:text-[10px] tracking-[0.2em] font-bold">
+                <th className="pb-4 lg:pb-6 text-left">{cur.fact}</th>
+                <th className="pb-4 lg:pb-6 text-left">{cur.eval}</th>
+                <th className="pb-4 lg:pb-6 text-right">{cur.stat}</th>
+              </tr>
+            </thead>
+            <tbody className="text-slate-300">
+              {data.table.map((row, i) => (
+                <TableRow key={i} {...row} />
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Card>
 
-      <div className="flex gap-8">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
           <Button 
             onClick={onDownload}
             disabled={isDownloading}
-            className="flex-1 bg-white text-black hover:bg-slate-200 rounded-[1.8rem] h-16 font-bold tracking-tight transition-all active:scale-95 shadow-2xl shadow-indigo-500/10"
+            className="flex-1 bg-white text-black hover:bg-slate-200 rounded-[1.5rem] lg:rounded-[1.8rem] h-14 lg:h-16 font-bold tracking-tight transition-all active:scale-95 shadow-2xl shadow-indigo-500/10 text-sm lg:text-base"
           >
             {isDownloading ? (
                 <>
@@ -406,13 +408,13 @@ function Dashboard({ data, onDownload, isDownloading, lang }: { data: DashboardD
             ) : (
                 <>
                   {cur.generate}
-                  <Download className="w-5 h-5 ml-3" />
+                  <Download className="w-4 h-4 lg:w-5 lg:h-5 ml-3" />
                 </>
             )}
           </Button>
           <Button 
             variant="outline" 
-            className="flex-1 border-white/10 text-slate-300 hover:bg-white/5 hover:text-white rounded-[1.8rem] h-16 font-semibold tracking-tight backdrop-blur-md" 
+            className="flex-1 border-white/10 text-slate-300 hover:bg-white/5 hover:text-white rounded-[1.5rem] lg:rounded-[1.8rem] h-14 lg:h-16 font-semibold tracking-tight backdrop-blur-md text-sm lg:text-base" 
             onClick={() => window.location.assign('/')}
           >
             {cur.new}
@@ -427,16 +429,16 @@ function MetricCard({ title, value, icon: Icon, color, accent }: { title: string
     <motion.div
       initial={{ opacity: 0, scale: 0.95, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="bg-white/[0.03] border border-white/5 p-8 rounded-[2.5rem] relative overflow-hidden group hover:border-white/10 transition-all duration-500 shadow-2xl backdrop-blur-xl ring-1 ring-white/5"
+      className="bg-white/[0.03] border border-white/5 p-5 lg:p-8 rounded-3xl lg:rounded-[2.5rem] relative overflow-hidden group hover:border-white/10 transition-all duration-500 shadow-2xl backdrop-blur-xl ring-1 ring-white/5"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-50" />
-      <div className="flex items-center justify-between mb-8 relative z-10">
-        <div className={`p-4 rounded-[1.2rem] bg-black/40 border border-white/5 group-hover:border-white/10 transition-all duration-500 shadow-inner`}>
-           <Icon className={`w-6 h-6 ${color}`} />
+      <div className="flex items-center justify-between mb-4 lg:mb-8 relative z-10">
+        <div className={`p-3 lg:p-4 rounded-xl lg:rounded-[1.2rem] bg-black/40 border border-white/5 group-hover:border-white/10 transition-all duration-500 shadow-inner`}>
+           <Icon className={`w-5 h-5 lg:w-6 lg:h-6 ${color}`} />
         </div>
-        <span className="text-4xl font-extralight text-white/90 tracking-tighter">{value}%</span>
+        <span className="text-2xl lg:text-4xl font-extralight text-white/90 tracking-tighter">{value}%</span>
       </div>
-      <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-slate-500 mb-4 opacity-70 relative z-10">{title}</p>
+      <p className="text-[9px] lg:text-[11px] font-bold uppercase tracking-[0.25em] text-slate-500 mb-3 lg:mb-4 opacity-70 relative z-10">{title}</p>
       <div className="h-1.5 w-full bg-black/40 rounded-full overflow-hidden border border-white/5 relative z-10 p-[1px]">
           <motion.div 
             initial={{ width: 0 }}
@@ -458,11 +460,11 @@ function TableRow({ label, value, status }: { label: string, value: string, stat
     
     return (
         <tr className="border-b border-white/[0.03] group hover:bg-white/[0.01] transition-all">
-            <td className="py-8 font-light text-slate-400 group-hover:text-slate-100 transition-colors text-base">{label}</td>
-            <td className="py-8 italic text-slate-500 group-hover:text-slate-300 transition-colors font-light tracking-wide">{value}</td>
-            <td className="py-8">
-                <div className="flex items-center justify-end gap-3">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 opacity-50">{status}</span>
+            <td className="py-4 lg:py-8 font-light text-slate-400 group-hover:text-slate-100 transition-colors text-xs lg:text-base">{label}</td>
+            <td className="py-4 lg:py-8 italic text-slate-500 group-hover:text-slate-300 transition-colors font-light tracking-wide text-xs lg:text-base">{value}</td>
+            <td className="py-4 lg:py-8">
+                <div className="flex items-center justify-end gap-2 lg:gap-3">
+                    <span className="text-[8px] lg:text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 opacity-50">{status}</span>
                     {statusIcons[status]}
                 </div>
             </td>

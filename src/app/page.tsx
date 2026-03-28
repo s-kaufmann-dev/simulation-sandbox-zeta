@@ -45,33 +45,33 @@ export default function LandingPage() {
         transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         className="z-10 w-full max-w-3xl px-8 text-center"
       >
-        <div className="flex items-center justify-center gap-6 mb-12">
-            <div className="w-14 h-14 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center backdrop-blur-md">
-                <Shield className="w-7 h-7 text-white/70" />
+        <div className="flex items-center justify-center gap-4 lg:gap-6 mb-8 lg:mb-12">
+            <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center backdrop-blur-md shrink-0">
+                <Shield className="w-5 h-5 lg:w-7 lg:h-7 text-white/70" />
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center backdrop-blur-md">
-                <Rocket className="w-7 h-7 text-white/70" />
+            <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center backdrop-blur-md shrink-0">
+                <Rocket className="w-5 h-5 lg:w-7 lg:h-7 text-white/70" />
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center backdrop-blur-md">
-                <User className="w-7 h-7 text-white/70" />
+            <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center backdrop-blur-md shrink-0">
+                <User className="w-5 h-5 lg:w-7 lg:h-7 text-white/70" />
             </div>
         </div>
         
-        <h1 className="text-5xl md:text-8xl font-extralight tracking-tighter text-white mb-8">
+        <h1 className="text-4xl md:text-8xl font-extralight tracking-tighter text-white mb-6 lg:mb-8">
             {t.headline} <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">{t.sub}</span>
         </h1>
         
-        <p className="text-slate-400 text-lg md:text-xl mb-16 font-light tracking-wide max-w-xl mx-auto leading-relaxed">
+        <p className="text-slate-400 text-base md:text-xl mb-10 lg:mb-16 font-light tracking-wide max-w-xl mx-auto leading-relaxed">
             {t.desc}
         </p>
 
-        <div className="flex items-center justify-center gap-3 mb-12">
+        <div className="flex flex-wrap items-center justify-center gap-2 lg:gap-3 mb-8 lg:mb-12">
           {languages.map((l) => (
             <button
               key={l}
               onClick={() => setLang(l)}
               type="button"
-              className={`w-12 h-12 rounded-2xl text-[11px] font-bold transition-all border backdrop-blur-xl ${
+              className={`w-10 h-10 lg:w-12 lg:h-12 rounded-xl lg:rounded-2xl text-[10px] lg:text-[11px] font-bold transition-all border backdrop-blur-xl shrink-0 ${
                 lang === l 
                   ? 'bg-white text-black border-white shadow-[0_0_30px_rgba(255,255,255,0.2)] scale-110 font-bold' 
                   : 'bg-white/5 text-slate-500 border-white/5 hover:bg-white/10 hover:border-white/10'
@@ -84,33 +84,35 @@ export default function LandingPage() {
 
         <form onSubmit={handleSubmit} className="relative group max-w-2xl mx-auto">
           <div className="absolute -inset-1 bg-gradient-to-r from-white/10 to-white/5 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition duration-1000"></div>
-          <div className="relative flex items-center bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-3 pl-8 shadow-2xl ring-1 ring-white/5 transition-all focus-within:bg-white/[0.05]">
-            <Search className="w-6 h-6 text-slate-500 mr-4" />
-            <Input 
-              value={concept}
-              onChange={(e) => setConcept(e.target.value)}
-              placeholder={t.placeholder}
-              className="bg-transparent border-none focus-visible:ring-0 text-white placeholder:text-slate-600 text-lg md:text-xl h-16 font-light"
-            />
+          <div className="relative flex flex-col md:flex-row items-center bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-3xl md:rounded-[2.5rem] p-2 md:p-3 md:pl-8 shadow-2xl ring-1 ring-white/5 transition-all focus-within:bg-white/[0.05]">
+            <div className="flex items-center w-full px-4 md:px-0">
+               <Search className="w-5 h-5 lg:w-6 lg:h-6 text-slate-500 mr-2 md:mr-4 shrink-0" />
+               <Input 
+                 value={concept}
+                 onChange={(e) => setConcept(e.target.value)}
+                 placeholder={t.placeholder}
+                 className="bg-transparent border-none focus-visible:ring-0 text-white placeholder:text-slate-600 text-base md:text-xl h-14 md:h-16 font-light w-full"
+               />
+            </div>
             <Button 
                 type="submit"
                 disabled={!concept.trim()}
-                className="bg-white text-black hover:bg-slate-200 rounded-[1.8rem] h-14 px-10 font-bold tracking-tight transition-all active:scale-95 shadow-xl shadow-white/5"
+                className="w-full md:w-auto bg-white text-black hover:bg-slate-200 rounded-2xl md:rounded-[1.8rem] h-12 md:h-14 px-8 lg:px-10 font-bold tracking-tight transition-all active:scale-95 shadow-xl shadow-white/5 mt-2 md:mt-0"
             >
               {t.start}
-              <Sparkles className="w-5 h-5 ml-3" />
+              <Sparkles className="w-4 h-4 lg:w-5 lg:h-5 ml-2 md:ml-3" />
             </Button>
           </div>
         </form>
  
-        <div className="mt-20 flex items-center justify-center gap-10 text-slate-500 text-sm font-medium tracking-widest opacity-60">
-            <span className="flex items-center gap-3">
+        <div className="mt-12 lg:mt-20 flex flex-wrap items-center justify-center gap-6 lg:gap-10 text-slate-500 text-[10px] lg:text-sm font-medium tracking-widest opacity-60">
+            <span className="flex items-center gap-2 lg:gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-white/50" /> {t.skeptic}
             </span>
-            <span className="flex items-center gap-3">
+            <span className="flex items-center gap-2 lg:gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-slate-400" /> {t.enthusiast}
             </span>
-            <span className="flex items-center gap-3">
+            <span className="flex items-center gap-2 lg:gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-neutral-500" /> {t.pragmatist}
             </span>
         </div>
